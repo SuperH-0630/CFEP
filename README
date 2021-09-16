@@ -1,0 +1,24 @@
+﻿CMakeFindExternalProject CMake配置时安装依赖程序
+============================================
+允许在CMake配置时检查库的存在, 若不存在则构建该库
+目前尚处开发阶段...
+
+导出宏:
+CFEP_find_git 寻找指定Package, 若无则从git下载项目并构建
+CFEP_find_url 寻找指定Package, 若无则从url下载项目并构建
+他们的执行效果相当于find_package
+
+导出函数:
+CFEP_install 依赖库安装的内容会被添加到安装目录
+CFEP_copy_install 拷贝依赖库安装的内容到指定目录
+WI_install_import 为导入库添加安装程序
+WI_copy_import 将导入库的运行时和imp-lib复制到指定目录
+WI_install_dll_bin 检查bin目录中的dll, 并添加install
+
+注意: 其余函数和宏均为内部函数, 不建议直接调用
+
+
+使用当时:
+将cmake文件夹复制到你的项目中
+通过包含代码: include(cmake/CMakeFindExternalProject/init.cmake)
+即可使用

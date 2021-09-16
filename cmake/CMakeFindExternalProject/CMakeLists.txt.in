@@ -1,0 +1,32 @@
+﻿#[[
+文件名: CMakeLists.txt
+由CMakeFindExternalProject自动生成的CMakeLists.txt文件
+]]
+
+cmake_minimum_required(VERSION @CEFP_CMAKE_VERSION@)
+project(CFEP_@CFEP_NAME@)
+
+if(@SHOW_INFO@)
+    message(STATUS "CMakeFindExternalProject: Build @CFEP_NAME@ in cmake.")
+endif()
+
+include(ExternalProject)
+ExternalProject_Add(
+@CFEP_NAME@_cefp
+PREFIX "@CEFP_BUILD_PREFIX@"
+DOWNLOAD_DIR "@CEFP_BUILD_PREFIX@/download"
+SOURCE_DIR "@CEFP_SOURCE_DIR@"
+BINARY_DIR "@CEFP_BINARY_DIR@"
+INSTALL_DIR "@CEFP_INSTALL_DIR@"
+STAMP_DIR "@CEFP_BUILD_PREFIX@/stamp"
+LOG_DIR "@CEFP_BUILD_PREFIX@/log"
+TMP_DIR "@CEFP_BUILD_PREFIX@/tmp"
+
+@CEFP_COMMAND@
+
+DOWNLOAD_NO_PROGRESS 0
+BUILD_ALWAYS 1
+LOG_DOWNLOAD 1
+LOG_CONFIGURE 1
+LOG_BUILD 1
+LOG_INSTALL 1)
