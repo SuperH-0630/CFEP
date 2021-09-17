@@ -118,7 +118,7 @@ function(WI_copy_import)
     endforeach()
 endfunction()
 
-# 安装install的bin目录(检查.dll并复制到指定位置)
+# 安装install的bin目录(检查.dll并安装到指定位置)
 function(WI_install_dll_bin)
     if(WIN32)
         cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
@@ -135,10 +135,89 @@ function(WI_install_dll_bin)
         set(dirs ${ii_DIRS})
         foreach(dir IN LISTS dirs)
             file(GLOB_RECURSE _dll  # 遍历所有的.dll
-                 LIST_DIRECTORIES FALSE  #
+                 FOLLOW_SYMLINKS  # 遍历link
+                 LIST_DIRECTORIES FALSE  #  不记录列表
                  CONFIGURE_DEPENDS
                  "${dirs}/*.dll")
-            install(FILES ${_dll} DESTINATION ${RUNTIME})
+            if (_dll)
+                install(FILES ${_dll} DESTINATION ${runtime})
+            endif()
         endforeach()
+    endif()
+endfunction()
+
+# 复制bin目录(检查.dll并复制到指定位置)
+function(WI_copy_dll_bin)
+    if(WIN32)
+        cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
+        if (NOT ii_RUNTIME)
+            if (INSTALL_BINDIR)
+                set(runtime ${INSTALL_BINDIR})
+            else()
+                set(runtime ${CMAKE_INSTALL_BINDIR})
+            endif()
+        else()
+            set(runtime ${ii_RUNTIME})
+        endif()
+
+        set(dirs ${ii_DIRS})
+        foreach(dir IN LISTS dirs)
+            file(GLOB_RECURSE _dll  # 遍历所有的.dll
+                 FOLLOW_SYMLINKS  # 遍历link
+                 LIST_DIRECTORIES FALSE  #  不记录列表
+                 CONFIGURE_DEPENDS
+                 "${dirs}/*.dll")
+            if (_dll)
+                file(COPY ${_dll} DESTINATION ${runtime} USE_SOURCE_PERMISSIONS)
+            endif()
+        endforeach()
+    endif()
+endfunction()
+
+# 检查文件夹是否有exe, 若有则将其当作bin目录处理
+function(WI_install_dll_dir)
+    if(WIN32)
+        cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
+        if (NOT ii_RUNTIME)
+            if (INSTALL_BINDIR)
+                set(runtime ${INSTALL_BINDIR})
+            else()
+                set(runtime ${CMAKE_INSTALL_BINDIR})
+            endif()
+        else()
+            set(runtime ${ii_RUNTIME})
+        endif()
+
+        set(dirs ${ii_DIRS})
+        file(GLOB _exe
+             LIST_DIRECTORIES FALSE  #  不记录列表
+             CONFIGURE_DEPENDS
+             "${dirs}/*.exe")
+        if (dirs)
+            WI_install_dll_bin(RUNTIME ${runtime} DIRS ${dirs})
+        endif()
+    endif()
+endfunction()
+
+# 检查文件夹是否有exe, 若有则将其当作bin目录处理
+function(WI_copy_dll_dir)
+    if(WIN32)
+        cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
+        if (NOT ii_RUNTIME)
+            if (INSTALL_BINDIR)
+                set(runtime ${INSTALL_BINDIR})
+            else()
+                set(runtime ${CMAKE_INSTALL_BINDIR})
+            endif()
+        else()
+            set(runtime ${ii_RUNTIME})
+        endif()
+
+        set(dirs ${ii_DIRS})
+        file(GLOB _exe
+             LIST_DIRECTORIES FALSE  #  不记录列表
+             CONFIGURE_DEPENDS
+             "${dirs}/*.exe")
+        WI_copy_dll_bin(RUNTIME ${runtime} DIRS ${dirs})
     endif()
 endfunction()
