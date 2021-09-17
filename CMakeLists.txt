@@ -11,7 +11,6 @@ message(STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
 include(cmake/CMakeFindExternalProject/CMakeFindExternalProject.cmake)
 CFEP_find_git(msgTargets GIT "https://gitee.com/SuperHuan0630/cmake-learn.git" GIT_TAG "main"
                        EXTERNAL TIMEOUT 60 INSTALL_DIR base)
-CFEP_copy_install(msgTargets)
 
 if (msgTargets_FOUND)
     # IMPORTED_IMPLIB和IMPORTED_IMPLIB_<CONFIG>属性设定了该导入库的动态库导入文件的路径(例如, windows上的.lib, .dll.a)

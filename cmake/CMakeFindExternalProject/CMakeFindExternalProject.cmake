@@ -25,6 +25,7 @@ function(_cfep_build_inline name)
     set(options NOT_INFO FORCE)
     set(oneValueArgs
         BUILD_DIR
+        SOURCE_DIR  # 指定源文件的位置, 指定后不可再设定DOWNLOAD_COMMAND
         INSTALL_DIR  # 有三个选择: base, deps, binary
         TIMEOUT)
     set(multiValueArgs
@@ -53,9 +54,27 @@ function(_cfep_build_inline name)
     endif()
 
     set(_cmake_dir ${_build_dir}/cmake.dir)
-    set(_source_dir ${_build_dir}/source)
     set(_binary_dir ${_build_dir}/binary)
     set(_timeout ${cfp_TIMEOUT})
+
+    if (cfp_SOURCE_DIR)
+        if(EXISTS ${cfp_SOURCE_DIR})  # 若指定的SOURCE_DIR存在
+            if (cfp_DOWNLOAD_COMMAND)  # 若仍有DOWNLOAD_COMMAND
+                if (_info)
+                    message(WARNING "DOWNLOAD_COMMAND will be ignore.")
+                endif()
+                unset(cfp_DOWNLOAD_COMMAND)  # 清空cfp_DOWNLOAD_COMMAND
+            endif()
+            set(_source_dir ${cfp_SOURCE_DIR})
+        else()  # 若指定的SOURCE_DIR不存在
+            if (_info)
+                message(WARNING "SOURCE_DIR will be ignore.")
+            endif()
+            set(_source_dir ${_build_dir}/source)
+        endif()
+    else()  # 若没有SOURCE_DIR则按默认_source_dir
+        set(_source_dir ${_build_dir}/source)
+    endif()
 
     if (cfp_INSTALL_DIR STREQUAL "base")
         set(_install_dir ${CMAKE_BINARY_DIR}/${name})
@@ -63,6 +82,14 @@ function(_cfep_build_inline name)
         set(_install_dir ${CMAKE_BINARY_DIR}/${name})
     else()
         set(_install_dir ${_build_dir}/install)
+    endif()
+
+    if (_info)
+        message(STATUS "Project ${name} will be build.")
+        message(STATUS "Project ${name} source at ${_source_dir}")
+        message(STATUS "Project ${name} install to ${_install_dir}")
+        message(STATUS "Project ${name} build at ${_binary_dir}")
+        message(STATUS "Project ${name} other info at ${_build_dir}")
     endif()
 
     if(NOT _force)
@@ -77,7 +104,7 @@ function(_cfep_build_inline name)
                 RESULT_VARIABLE re)
         if (re)
             if (_info)
-                message(WARNING "cmake make directory ${_${dir}_dir} fail(${re})")
+                message(WARNING "cmake make directory ${_${dir}_dir} fail(${re}): ${_${dir}_dir}")
             endif()
             _cfep_build_found_inline(FALSE)
             return()
@@ -232,6 +259,16 @@ function(_cfep_build_git_inline name git git_tag)
                  GIT_PROGRESS 0
                  GIT_REMOTE_UPDATE_STRATEGY REBASE_CHECKOUT
                  ${ARGN})
+    if (${name}_CFEP_FOUND)
+        set(${name}_BUILD TRUE PARENT_SCOPE)
+    else()
+        set(${name}_BUILD FALSE PARENT_SCOPE)
+    endif()
+endfunction()
+
+# 指定源文件下载程序
+function(_cfep_build_dir_inline name dir)
+    _cfep_build_inline(${name} SOURCE_DIR ${dir} ${ARGN})
     if (${name}_CFEP_FOUND)
         set(${name}_BUILD TRUE PARENT_SCOPE)
     else()
@@ -412,6 +449,85 @@ macro(CFEP_find_git name)
     unset(cfpu_QUIET)
 endmacro()
 
+# 从dir下载文件
+macro(CFEP_find_dir name)
+    while (1)  # 宏无法处理return, 所以使用while+break来模拟return
+        set(options REQUIRED QUIET)
+        set(oneValueArgs SOURCE_DIR CMAKE_DIR)
+        set(multiValueArgs
+            PACKAGE
+            EXTERNAL)
+
+        cmake_parse_arguments(cfpu
+                              "${options}"
+                              "${oneValueArgs}"
+                              "${multiValueArgs}"
+                              ${ARGN})
+
+        set(_name ${name})
+        set(_dir ${cfpu_SOURCE_DIR})
+        set(_cmake ${cfpu_CMAKE_DIR})
+        set(_find_args ${cfpu_PACKAGE})
+        set(_external_args ${cfpu_EXTERNAL})
+        set(_required ${cfpu_REQUIRED})
+        set(_quiet ${cfpu_QUIET})
+
+        if (NOT _dir)
+            _cfep_found_inline(FALSE)
+            break()
+        endif()
+
+        if (NOT ${name}_MUST_BUILD)  # 必须构建, 则先不尝试搜索库
+            find_package(${name} QUIET ${_find_args})  # 尝试搜索
+            if (${name}_FOUND)
+                _cfep_found_inline(TRUE)
+                break()
+            endif()
+        else()
+            set(${name}_MUST_BUILD FALSE CACHE BOOL "" FORCE)
+        endif()
+
+        _cfep_build_dir_inline(${name} ${_dir} ${_external_args})  # 尝试构建
+        if (NOT ${name}_BUILD)  # 未构建
+            _cfep_found_inline(FALSE)
+            break()
+        endif()
+
+        if (_cmake)
+            set(${name}_DIR "${${name}_CFEP_INSTALL}/${_cmake}" CACHE PATH "" FORCE)
+        elseif(WIN32 AND NOT CYGWIN)
+            set(${name}_DIR "${${name}_CFEP_INSTALL}/cmake" CACHE PATH "" FORCE)
+        else()
+            set(${name}_DIR "${${name}_CFEP_INSTALL}/share/cmake/${name}" CACHE PATH "" FORCE)
+        endif()
+
+        find_package(${name} QUIET ${_find_args})  # 最后搜索
+        if (${name}_FOUND)
+            _cfep_found_inline(TRUE)
+            break()
+        endif()
+        _cfep_found_inline(FALSE)
+        break()
+    endwhile()
+
+    unset(_name)
+
+    unset(_dir)
+    unset(_cmake)
+    unset(_find_args)
+    unset(_external_args)
+    unset(_required)
+    unset(_quiet)
+
+    unset(cfpu_SOURCE_DIR)
+    unset(cfpu_CMAKE_DIR)
+    unset(cfpu_PACKAGE)
+    unset(cfpu_EXTERNAL)
+    unset(cfpu_REQUIRED)
+    unset(cfpu_QUIET)
+endmacro()
+
+# 安装程序
 function(CFEP_install name)
     cmake_parse_arguments(ci "NOT_QUIET" "PREFIX" "" ${ARGN})
 
