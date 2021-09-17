@@ -9,7 +9,7 @@ project(CMakeFindExternalProjectTest C)
 message(STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
 
 include(cmake/CMakeFindExternalProject/init.cmake)
-CFEP_find_git(msgTargets GIT "https://gitee.com/SuperHuan0630/cmake-learn.git" GIT_TAG "main"
+cfep_find_git(msgTargets GIT "https://gitee.com/SuperHuan0630/cmake-learn.git" GIT_TAG "main"
                        EXTERNAL TIMEOUT 60 INSTALL_DIR base)
 
 if (msgTargets_FOUND)

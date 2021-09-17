@@ -3,7 +3,7 @@
 设置安装路径的程序
 ]]
 
-function(WI_set_install_dir_quiet)
+function(wi_set_install_dir_quiet)
     cmake_parse_arguments(i "" "NAMES" "" ${ARGN})
 
     if (i_NAMES)
@@ -39,7 +39,7 @@ function(WI_set_install_dir_quiet)
     unset(DEF_INSTALL_CMAKEDIR)
 endfunction()
 
-function(WI_set_install_dir)
+function(wi_set_install_dir)
     if (NOT CMAKE_SIZEOF_VOID_P)  # 如果还未设定CMAKE_SIZEOF_VOID_P, 则现在设定该值
         try_run(run_re com_re ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/_void_p_test.c)
         if (com_re)  # 编译正常
@@ -48,7 +48,7 @@ function(WI_set_install_dir)
     endif()
 
     set(_argn ${ARGN})
-    WI_set_install_dir_quiet(${_argn})
+    wi_set_install_dir_quiet(${_argn})
 
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} PARENT_SCOPE)  # 静态库的输出路径
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} PARENT_SCOPE)  # 动态库(或者动态库的导入文件)的输出路径

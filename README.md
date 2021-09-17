@@ -17,7 +17,7 @@ xxx可以为`url`，`git`，`dir`分别表示从不同的地方下载第三方�
 
 #### 从URL下载项目
 ```
-CFEP_find_url(<name>
+cfep_find_url(<name>
     [REQUIRE]
     [QUIET]
     [URL _url]
@@ -114,7 +114,7 @@ SOURCE_DIR _source_dir
 #### 添加到安装目录
 将第三方依赖安装到指定位置(随构建树一起安装)，使用函数:
 ```
-CFEP_install(<name>
+cfep_install(<name>
     [NOT_QUIET]
     [PREFIX _prefix]
 )
@@ -130,7 +130,7 @@ CFEP_install(<name>
 #### 立即复制到指定位置
 将第三方依赖安装的内容复制到指定位置(CMake配置时执行)，使用函数:
 ```
-CFEP_copy_install(<name>
+cfep_copy_install(<name>
     [NOT_QUIET]
     [DEST _dest]
 )
@@ -150,7 +150,7 @@ CFEP_copy_install(<name>
 因为`windows`平台没有`rpath`等机制, 因此需要将第三方导入的库的`.dll`复制到指定位置
 使用函数:
 ```
-WI_install_import(
+wi_install_import(
     [RUNTIME _runtime]
     [LIBRARY _library]
     [TARGETS ...]
@@ -161,14 +161,14 @@ WI_install_import(
 * `LIBRARY` 导入库的安装位置，默认值为`INSTALL_LIBDIR`
 * `TARGETS` 安装的对象
 
-`WI_install_import`是在构建树安装时才安装导入的库。
-使用`WI_copy_import`可以在`CMake`配置时就复制文件到指定位置。
-使用方式和`WI_install_import`相同。
+`wi_install_import`是在构建树安装时才安装导入的库。
+使用`wi_copy_import`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`wi_install_import`相同。
 
 #### 安装`.dll`
 使用如下函数，可以检索文件夹下的所有`dll`并安装到指定位置：
 ```
-WI_install_dll_bin(
+wi_install_dll_bin(
     [RUNTIME _runtime]
     [DIRS ...]
 )
@@ -177,14 +177,14 @@ WI_install_dll_bin(
 * `RUNTIME` 运行时库安装的位置, 默认值为`INSTALL_BINDIR`
 * `DIRS` 需要检查的目录路径
 
-`WI_install_dll_bin`是在构建树安装时才安装导入的库。
-使用`WI_copy_dll_bin`可以在`CMake`配置时就复制文件到指定位置。
-使用方式和`WI_install_dll_bin`相同。
+`wi_install_dll_bin`是在构建树安装时才安装导入的库。
+使用`wi_copy_dll_bin`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`wi_install_dll_bin`相同。
 
 #### 检查是否包含`.exe`
 使用如下函数，检查一个目录是否包含`.exe`，若包含则将该目录的`.dll`安装到指定位置：
 ```
-WI_install_dll_dir(
+wi_install_dll_dir(
     [RUNTIME _runtime]
     [DIRS ...]
 )
@@ -193,16 +193,16 @@ WI_install_dll_dir(
 * `RUNTIME` 运行时库安装的位置, 默认值为`INSTALL_BINDIR`
 * `DIRS` 需要检查的目录路径
 
-`WI_install_dll_dir`是在构建树安装时才安装导入的库。
-使用`WI_copy_dll_dir`可以在`CMake`配置时就复制文件到指定位置。
-使用方式和`WI_install_dll_dir`相同。
+`wi_install_dll_dir`是在构建树安装时才安装导入的库。
+使用`wi_copy_dll_dir`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`wi_install_dll_dir`相同。
 
 ### 安装程序
 #### 设定安装路径
 设定标准的`GNU`安装路径, 使用如下函数：
 ```
-WI_set_install_dir
-WI_set_install_dir_quiet
+wi_set_install_dir
+wi_set_install_dir_quiet
 ```
 以上两个函数的区别在于, 后者不会显示任何信息。
 注意：该函数必须在`project`指令后执行。
@@ -222,7 +222,7 @@ WI_set_install_dir_quiet
 #### 使用安装路径安装
 使用如下函数安装对象, 该函数和`install`指令类似, 但是使用了预设的安装路径。
 ```
-WI_install(
+wi_install(
     [INSTALL ...]
     [ARCHIVE ...]
     [RUNTIME ...]

@@ -291,7 +291,7 @@ macro(_cfep_found_inline _found)
 endmacro()
 
 # 从url下载文件
-macro(CFEP_find_url name)
+macro(cfep_find_url name)
     while (1)  # 宏无法处理return, 所以使用while+break来模拟return
         set(options REQUIRED QUIET)
         set(oneValueArgs URL CMAKE_DIR)
@@ -369,7 +369,7 @@ macro(CFEP_find_url name)
 endmacro()
 
 # 从git下载文件
-macro(CFEP_find_git name)
+macro(cfep_find_git name)
     while (1)  # 宏无法处理return, 所以使用while+break来模拟return
         set(options REQUIRED QUIET)
         set(oneValueArgs GIT GIT_TAG CMAKE_DIR)
@@ -450,7 +450,7 @@ macro(CFEP_find_git name)
 endmacro()
 
 # 从dir下载文件
-macro(CFEP_find_dir name)
+macro(cfep_find_dir name)
     while (1)  # 宏无法处理return, 所以使用while+break来模拟return
         set(options REQUIRED QUIET)
         set(oneValueArgs SOURCE_DIR CMAKE_DIR)
@@ -528,7 +528,7 @@ macro(CFEP_find_dir name)
 endmacro()
 
 # 安装程序
-function(CFEP_install name)
+function(cfep_install name)
     cmake_parse_arguments(ci "NOT_QUIET" "PREFIX" "" ${ARGN})
 
     if (NOT ci_PREFIX)
@@ -555,7 +555,7 @@ function(CFEP_install name)
     set(${name}_CFEP_INSTALL_SUCCESS TRUE PARENT_SCOPE)
 endfunction()
 
-function(CFEP_copy_install name)
+function(cfep_copy_install name)
     cmake_parse_arguments(cci "NOT_QUIET" "DEST" "" ${ARGN})
 
     if (NOT cci_DEST)
