@@ -549,7 +549,7 @@ function(CFEP_install name)
         set(prefix ${CMAKE_INSTALL_PREFIX})
     endif()
 
-    install(DIRECTORY ${${name}_CFEP_INSTALL}
+    install(DIRECTORY "${${name}_CFEP_INSTALL}/"  # /表示把${${name}_CFEP_INSTALL}的内容安装到${prefix}
             DESTINATION ${prefix}
             USE_SOURCE_PERMISSIONS)
     set(${name}_CFEP_INSTALL_SUCCESS TRUE PARENT_SCOPE)

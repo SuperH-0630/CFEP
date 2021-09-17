@@ -9,4 +9,5 @@ WindowsInstall.cmake
 
 init.cmake 导入 CMakeFindExternalProject.cmake, WindowsInstall.cmake, InstallDir.cmake
 CMakeFindExternalProject.cmake 依赖于 CMakeLists.txt.in
+InstallDir.cmake 依赖于 _void_p_test.c
 WindowsInstall.cmake, InstallDir.cmake 和 CMakeFindExternalProject.cmake 之间无相互依赖
