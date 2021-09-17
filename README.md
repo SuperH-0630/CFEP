@@ -6,6 +6,9 @@ CMakeFindExternalProject（下称CFEP）是用于CMake构建系统的依赖管�
 同时, 它提供了第三方依赖安装, Windows运行时库安装等工具。
 
 ## 功能
+**使用注意：**
+**以下函数(宏)均允许以小写形式调用**
+
 ### 第三方依赖
 CMake提供如下函数:
 ```CEFP_find_xxx```
@@ -140,6 +143,60 @@ CFEP_copy_install(<name>
 注意：该函数执行前需要执行`CFEP_find_xxx`函数。
 若`CFEP_find_xxx`未安装第三方依赖, 则此函数被的执行被忽略。
 
+### Windows动态库
+以下函数尽在`windows`平台生效, 其他平台执行无效果
+
+#### 安装导入库
+因为`windows`平台没有`rpath`等机制, 因此需要将第三方导入的库的`.dll`复制到指定位置
+使用函数:
+```
+WI_install_import(
+    [RUNTIME _runtime]
+    [LIBRARY _library]
+    [TARGETS ...]
+)
+```
+
+* `RUNTIME` 运行时库安装的位置, 默认值为`INSTALL_BINDIR`
+* `LIBRARY` 导入库的安装位置，默认值为`INSTALL_LIBDIR`
+* `TARGETS` 安装的对象
+
+`WI_install_import`是在构建树安装时才安装导入的库。
+使用`WI_copy_import`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`WI_install_import`相同。
+
+#### 安装`.dll`
+使用如下函数，可以检索文件夹下的所有`dll`并安装到指定位置：
+```
+WI_install_dll_bin(
+    [RUNTIME _runtime]
+    [DIRS ...]
+)
+```
+
+* `RUNTIME` 运行时库安装的位置, 默认值为`INSTALL_BINDIR`
+* `DIRS` 需要检查的目录路径
+
+`WI_install_dll_bin`是在构建树安装时才安装导入的库。
+使用`WI_copy_dll_bin`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`WI_install_dll_bin`相同。
+
+#### 检查是否包含`.exe`
+使用如下函数，检查一个目录是否包含`.exe`，若包含则将该目录的`.dll`安装到指定位置：
+```
+WI_install_dll_dir(
+    [RUNTIME _runtime]
+    [DIRS ...]
+)
+```
+
+* `RUNTIME` 运行时库安装的位置, 默认值为`INSTALL_BINDIR`
+* `DIRS` 需要检查的目录路径
+
+`WI_install_dll_dir`是在构建树安装时才安装导入的库。
+使用`WI_copy_dll_dir`可以在`CMake`配置时就复制文件到指定位置。
+使用方式和`WI_install_dll_dir`相同。
+
 ### 安装程序
 #### 设定安装路径
 设定标准的`GNU`安装路径, 使用如下函数：
@@ -162,12 +219,35 @@ WI_set_install_dir_quiet
 - CMAKE_LIBRARY_OUTPUT_DIRECTORY
 - CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
+#### 使用安装路径安装
+使用如下函数安装对象, 该函数和`install`指令类似, 但是使用了预设的安装路径。
+```
+WI_install(
+    [INSTALL ...]
+    [ARCHIVE ...]
+    [RUNTIME ...]
+    [LIBRARY ...]
+    [PUBLIC_HEADER ...]
+    [RESOURCE ...]
+    [OTHER_TARGET ...]
+)
+```
+
+* `INSTALL` 参数用于`install`指令
+* `ARCHIVE`，`RUNTIME`等和`install`的`ARCHIVE`，`RUNTIME`类似，但`DESTINATION`已经被设定
+* `OTHER_TARGET` 则是`install`指令的其他参数
+
 ## 使用方式
 将项目中的`cmake/CMakeFindExternalProject`文件夹放置在项目指定位置, 在`cmake`中执行：
 ```
 include(<CMakeFindExternalProject文件夹位置>/init.cmake)
 ```
-即可
+### 文件介绍
+* `CMakeFindExternalProject.cmake`文件包含的是第三方依赖管理的程序
+依赖于`CMakeLists.txt.in`文件
+* `WindowsInstall.cmake`是`.dll`安装程序
+* `InstallDir.cmake`是安装路径设置程序以及安装程序
+依赖于`_void_p_test.c`文件，该程序用于检查一个`void`指针的大小。
 
 ## 声明
 ### 开源协议
