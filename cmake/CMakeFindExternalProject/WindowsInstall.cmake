@@ -201,13 +201,15 @@ function(WI_install_dll_dir)
         endif()
 
         set(dirs ${ii_DIRS})
-        file(GLOB _exe
-             LIST_DIRECTORIES FALSE  #  不记录列表
-             CONFIGURE_DEPENDS
-             "${dirs}/*.exe")
-        if (dirs)
-            WI_install_dll_bin(RUNTIME ${runtime} DIRS ${dirs})
-        endif()
+        foreach(dir IN LISTS dirs)
+            file(GLOB _exe
+                 LIST_DIRECTORIES FALSE  #  不记录列表
+                 CONFIGURE_DEPENDS
+                 "${dir}/*.exe")
+            if (_exe)
+                WI_install_dll_bin(RUNTIME ${runtime} DIRS ${dir})
+            endif()
+        endforeach()
     endif()
 endfunction()
 
@@ -226,10 +228,14 @@ function(WI_copy_dll_dir)
         endif()
 
         set(dirs ${ii_DIRS})
-        file(GLOB _exe
-             LIST_DIRECTORIES FALSE  #  不记录列表
-             CONFIGURE_DEPENDS
-             "${dirs}/*.exe")
-        WI_copy_dll_bin(RUNTIME ${runtime} DIRS ${dirs})
+        foreach(dir IN LISTS dirs)
+            file(GLOB _exe
+                 LIST_DIRECTORIES FALSE  #  不记录列表
+                 CONFIGURE_DEPENDS
+                 "${dir}/*.exe")
+            if (_exe)
+                WI_copy_dll_bin(RUNTIME ${runtime} DIRS ${dir})
+            endif()
+        endforeach()
     endif()
 endfunction()
