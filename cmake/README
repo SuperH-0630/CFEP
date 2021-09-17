@@ -7,6 +7,6 @@ CMakeFindExternalProject.cmake
 CMakeLists.txt.in
 WindowsInstall.cmake
 
-init.cmake 导入 CMakeFindExternalProject.cmake 和 WindowsInstall.cmake
+init.cmake 导入 CMakeFindExternalProject.cmake, WindowsInstall.cmake, InstallDir.cmake
 CMakeFindExternalProject.cmake 依赖于 CMakeLists.txt.in
-WindowsInstall.cmake 与 CMakeFindExternalProject.cmake 无相互依赖
+WindowsInstall.cmake, InstallDir.cmake 和 CMakeFindExternalProject.cmake 之间无相互依赖

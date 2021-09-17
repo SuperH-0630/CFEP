@@ -17,6 +17,8 @@ WI_install_dll_bin 检查bin目录中的dll, 并添加install
 WI_copy_dll_bin 检查bin目录中的dll, 并复制到指定目录
 WI_install_dll_dir 检查文件夹是否有exe, 若有则将其当作bin目录处理 (WI_install_dll_bin)
 WI_copy_dll_dir 检查文件夹是否有exe, 若有则将其当作bin目录处理 (WI_copy_dll_bin)
+WI_set_install_dir_quiet 设置安装路径
+WI_set_install_dir 设置安装路径并报告
 
 注意: 其余函数和宏均为内部函数, 不建议直接调用
 
