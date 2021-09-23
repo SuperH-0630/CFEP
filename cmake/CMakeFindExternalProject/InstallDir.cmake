@@ -64,38 +64,3 @@ function(wi_set_install_dir)
         message(STATUS "Install ${p} at ${CMAKE_INSTALL_PREFIX}/${INSTALL_${p}DIR}")
     endforeach()
 endfunction()
-
-function(wi_install)
-    set(multiValueArgs
-        INSTALL  # install 命令
-        ARCHIVE
-        RUNTIME
-        LIBRARY
-        PUBLIC_HEADER
-        RESOURCE
-        OTHER_TARGET)  # 其他安装目标
-
-    cmake_parse_arguments(i
-                          ""
-                          ""
-                          "${multiValueArgs}"
-                          ${ARGN})
-    install(
-            ${i_INSTALL}
-            ARCHIVE
-                DESTINATION ${INSTALL_LIBDIR}
-                ${i_ARCHIVE}
-            RUNTIME
-                DESTINATION ${INSTALL_BINDIR}
-                ${i_RUNTIME}
-            LIBRARY
-                DESTINATION ${INSTALL_LIBDIR}
-                ${i_LIBRARY}
-            PUBLIC_HEADER
-                DESTINATION ${INSTALL_INCLUDEDIR}
-                ${i_PUBLIC_HEADER}
-            RESOURCE
-                DESTINATION ${INSTALL_RESOURCEDIR}
-                ${i_RESOURCE}
-            ${i_OTHER_TARGET})
-endfunction()

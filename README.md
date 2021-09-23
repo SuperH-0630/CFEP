@@ -219,24 +219,6 @@ wi_set_install_dir_quiet
 - CMAKE_LIBRARY_OUTPUT_DIRECTORY
 - CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
-#### 使用安装路径安装
-使用如下函数安装对象, 该函数和`install`指令类似, 但是使用了预设的安装路径。
-```
-wi_install(
-    [INSTALL ...]
-    [ARCHIVE ...]
-    [RUNTIME ...]
-    [LIBRARY ...]
-    [PUBLIC_HEADER ...]
-    [RESOURCE ...]
-    [OTHER_TARGET ...]
-)
-```
-
-* `INSTALL` 参数用于`install`指令
-* `ARCHIVE`，`RUNTIME`等和`install`的`ARCHIVE`，`RUNTIME`类似，但`DESTINATION`已经被设定
-* `OTHER_TARGET` 则是`install`指令的其他参数
-
 ## 使用方式
 将项目中的`cmake/CMakeFindExternalProject`文件夹放置在项目指定位置, 在`cmake`中执行：
 ```
