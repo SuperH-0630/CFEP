@@ -18,7 +18,7 @@ xxx可以为`url`，`git`，`dir`分别表示从不同的地方下载第三方�
 #### 从URL下载项目
 ```
 cfep_find_url(<name>
-    [REQUIRE]
+    [REQUIRED]
     [QUIET]
     [URL _url]
     [CMAKE_DIR _dir]
@@ -28,12 +28,12 @@ cfep_find_url(<name>
 ```
 
 - `name` 库名，用于`find_package`。（必须指定）
-- `REQUIRE` 参数表示是否强制找到该库。
+- `REQUIRED` 参数表示是否强制找到该库。
 - `QUITE` 参数表示是否保持安静，即不输出信息。
 - `URL` 指定一个`url`链接。（必须指定）
 - `CMAKE_DIR` 表示当构建并安装该库后，该库的CMake文件夹和安装目录的相对位置。
 若不提供该值，则使用默认值，具体见后文。
-- `PACKAGE` 可跟多个参数, 将应用于`find_package`。但不可为`REQUIRE`以及`QUIET`。
+- `PACKAGE` 可跟多个参数, 将应用于`find_package`。但不可为`REQUIRED`以及`QUIET`。
 - `EXTERNAL` 可跟多个参数, 具体见后文。
 
 该函数的执行效果与`find_package`一样，本质就是调用`find_package`。
