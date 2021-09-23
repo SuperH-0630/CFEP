@@ -20,6 +20,7 @@ xxx可以为`url`，`git`，`dir`分别表示从不同的地方下载第三方�
 cfep_find_url(<name>
     [REQUIRED]
     [QUIET]
+    [MODULE]
     [URL _url]
     [CMAKE_DIR _dir]
     [PACKAGE ...]
@@ -30,6 +31,7 @@ cfep_find_url(<name>
 - `name` 库名，用于`find_package`。（必须指定）
 - `REQUIRED` 参数表示是否强制找到该库。
 - `QUITE` 参数表示是否保持安静，即不输出信息。
+- `MODULE` 以module模式而非config模式寻找库（只是设置参数的不同，find_package采用相同的策略）。
 - `URL` 指定一个`url`链接。（必须指定）
 - `CMAKE_DIR` 表示当构建并安装该库后，该库的CMake文件夹和安装目录的相对位置。
 若不提供该值，则使用默认值，具体见后文。
@@ -163,6 +165,7 @@ wi_install_import(
 
 `wi_install_import`是在构建树安装时才安装导入的库。
 使用`wi_copy_import`可以在`CMake`配置时就复制文件到指定位置。
+使用`wi_build_import`可以在`CMake`构建时才复制文件到指定位置（本质是添加一个构建目标）。
 使用方式和`wi_install_import`相同。
 
 #### 安装`.dll`
