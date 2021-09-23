@@ -24,29 +24,30 @@ function(wi_set_install_dir_quiet)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${_lib} PARENT_SCOPE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${_bin} PARENT_SCOPE)
 
-    # 设定安装的目录
-    set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Installation directory for libraries")
-    set(INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR} CACHE PATH "Installation directory for executables")
-    set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${_names} CACHE PATH "Installation directory for header files")
-    set(INSTALL_RESOURCEDIR resource/${_names} CACHE PATH "Installation directory for resource files")  # 关联文件
-
     if(WIN32 AND NOT CYGWIN)
         set(DEF_INSTALL_CMAKEDIR cmake)
+        set(DEF_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
+        set(DEF_INSTALL_RESOURCEDIR ${CMAKE_INSTALL_DATAROOTDIR})  # 关联文件
     else()
-        set(DEF_INSTALL_CMAKEDIR share/cmake/${_names})  # unix类系统(Unix, Linux, MacOS, Cygwin等)把cmake文件安装到指定的系统的cmake文件夹中
+        # unix类系统(Unix, Linux, MacOS, Cygwin等)把cmake文件安装到指定的系统的cmake文件夹中
+        set(DEF_INSTALL_CMAKEDIR ${CMAKE_INSTALL_DATAROOTDIR}/cmake/${_names})
+        set(DEF_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${_names})
+        set(DEF_INSTALL_RESOURCEDIR ${CMAKE_INSTALL_DATAROOTDIR}/${_names})  # 关联文件 CMAKE_INSTALL_DATAROOTDIR指: share
     endif()
+
+    # 设定安装的目录
+    set(INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR} CACHE PATH "Installation directory for executables")
+    set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Installation directory for libraries")
     set(INSTALL_CMAKEDIR ${DEF_INSTALL_CMAKEDIR} CACHE PATH "Installation directory for CMake files")
+    set(INSTALL_INCLUDEDIR ${DEF_INSTALL_INCLUDEDIR} CACHE PATH "Installation directory for header files")
+    set(INSTALL_RESOURCEDIR ${DEF_INSTALL_RESOURCEDIR} CACHE PATH "Installation directory for resource files")  # 关联文件
+
     unset(DEF_INSTALL_CMAKEDIR)
+    unset(DEF_INSTALL_INCLUDEDIR)
+    unset(DEF_INSTALL_RESOURCEDIR)
 endfunction()
 
 function(wi_set_install_dir)
-    if (NOT CMAKE_SIZEOF_VOID_P)  # 如果还未设定CMAKE_SIZEOF_VOID_P, 则现在设定该值
-        try_run(run_re com_re ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/_void_p_test.c)
-        if (com_re)  # 编译正常
-            set(CMAKE_SIZEOF_VOID_P ${run_re} CACHE INTERNAL ”“ FORCE)
-        endif()
-    endif()
-
     set(_argn ${ARGN})
     wi_set_install_dir_quiet(${_argn})
 
