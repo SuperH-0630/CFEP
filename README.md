@@ -6,8 +6,10 @@ CMakeFindExternalProject（下称CFEP）是用于CMake构建系统的依赖管�
 同时, 它提供了第三方依赖安装, Windows运行时库安装等工具。
 
 ## 功能
-**使用注意：**
-**以下函数(宏)均允许以小写形式调用**
+**使用注意：**  
+**以下函数(宏)均允许以小写形式调用**  
+**CYGWIN平台也被判定为WINDOWS平台**  
+**还为CYGWIN平台的cygwin1.dll添加支持**
 
 ### 第三方依赖
 CMake提供如下函数:
@@ -221,6 +223,10 @@ wi_set_install_dir_quiet
 - CMAKE_ARCHIVE_OUTPUT_DIRECTORY
 - CMAKE_LIBRARY_OUTPUT_DIRECTORY
 - CMAKE_RUNTIME_OUTPUT_DIRECTORY
+
+### cygwin支持
+使用函数`wi_find_cygwin1`可以获取`cygwin1.dll`动态库。
+将生成导入目标: `CYGWIN::cygwin1`
 
 ## 使用方式
 将项目中的`cmake/CMakeFindExternalProject`文件夹放置在项目指定位置, 在`cmake`中执行：

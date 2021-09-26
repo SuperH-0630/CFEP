@@ -31,7 +31,7 @@ function(wi_set_install_dir_quiet)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${_lib} PARENT_SCOPE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${_bin} PARENT_SCOPE)
 
-    if(WIN32 AND NOT CYGWIN)
+    if(WIN32 OR CYGWIN)  # cygwin和windows使用相同的文件结构
         set(DEF_INSTALL_CMAKEDIR cmake)
         set(DEF_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
         set(DEF_INSTALL_RESOURCEDIR ${CMAKE_INSTALL_DATAROOTDIR})  # 关联文件

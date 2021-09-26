@@ -6,7 +6,7 @@ windows下安装程序
 
 # 找到导入库的.dll和.lib并添加install
 function(_wi_install_import_inline target run lib)
-    if(WIN32)  # 只有windows需要执行该操作
+    if(WIN32 OR CYGWIN)  # 只有windows需要执行该操作 (包括cygwin也需要处理.dll依赖的问题)
         if (CMAKE_BUILD_TYPE)
             string(TOUPPER ${CMAKE_BUILD_TYPE} _build_type)
         else()
@@ -69,7 +69,7 @@ endfunction()
 
 # 找到导入库的.dll和.lib并复制到指定的目录
 function(_wi_copy_import_inline target run lib)
-    if(WIN32)  # 只有windows需要执行该操作
+    if(WIN32 OR CYGWIN)
         if (CMAKE_BUILD_TYPE)
             string(TOUPPER ${CMAKE_BUILD_TYPE} _build_type)
         else()
@@ -114,7 +114,7 @@ macro(set_copy_command target a b)
 endmacro()
 
 function(_wi_build_import_inline target run lib)
-    if(WIN32)  # 只有windows需要执行该操作
+    if(WIN32 OR CYGWIN)
         if (CMAKE_BUILD_TYPE)
             string(TOUPPER ${CMAKE_BUILD_TYPE} _build_type)
         else()
@@ -206,7 +206,7 @@ endfunction()
 
 # 安装install的bin目录(检查.dll并安装到指定位置)
 function(wi_install_dll_bin)
-    if(WIN32)
+    if(WIN32 OR CYGWIN)
         cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
         if (NOT ii_RUNTIME)
             if (INSTALL_BINDIR)
@@ -234,7 +234,7 @@ endfunction()
 
 # 复制bin目录(检查.dll并复制到指定位置)
 function(wi_copy_dll_bin)
-    if(WIN32)
+    if(WIN32 OR CYGWIN)
         cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
         if (NOT ii_RUNTIME)
             if (INSTALL_BINDIR)
@@ -262,7 +262,7 @@ endfunction()
 
 # 检查文件夹是否有exe, 若有则将其当作bin目录处理
 function(wi_install_dll_dir)
-    if(WIN32)
+    if(WIN32 OR CYGWIN)
         cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
         if (NOT ii_RUNTIME)
             if (INSTALL_BINDIR)
@@ -289,7 +289,7 @@ endfunction()
 
 # 检查文件夹是否有exe, 若有则将其当作bin目录处理
 function(wi_copy_dll_dir)
-    if(WIN32)
+    if(WIN32 OR CYGWIN)
         cmake_parse_arguments(ii "" "RUNTIME" "DIRS" ${ARGN})
         if (NOT ii_RUNTIME)
             if (INSTALL_BINDIR)
@@ -311,5 +311,16 @@ function(wi_copy_dll_dir)
                 wi_copy_dll_bin(RUNTIME ${runtime} DIRS ${dir})
             endif()
         endforeach()
+    endif()
+endfunction()
+
+function(wi_find_cygwin1)
+    if(CYGWIN)
+        find_file(cygwin1_dll "cygwin1.dll" DOC "Find cygwin1.dll on windows.")
+        if (NOT cygwin1_dll)
+            message(FATAL_ERROR "The cygwin1.dll not found.")
+        endif()
+        add_library(CYGWIN::cygwin1 SHARED IMPORTED)
+        set_target_properties(CYGWIN::cygwin1 PROPERTIES IMPORTED_LOCATION "${cygwin1_dll}")
     endif()
 endfunction()
