@@ -191,13 +191,13 @@ function(_cfep_build_inline name)
         message(STATUS "CMake Config ${name}...(Please Wait)")
     endif()
     execute_process(
-                    COMMAND "${CMAKE_COMMAND}" . -B ./build -G ${CMAKE_GENERATOR} ${_cmake_args}
-                    WORKING_DIRECTORY "${_cmake_dir}"
-                    RESULT_VARIABLE re
-                    OUTPUT_VARIABLE _stdout  # stdout的输出内容
-                    ERROR_VARIABLE _stderr  # stderr的输出内容
-                    OUTPUT_STRIP_TRAILING_WHITESPACE
-                    ERROR_STRIP_TRAILING_WHITESPACE
+            COMMAND "${CMAKE_COMMAND}" . -B ./build -G "${CMAKE_GENERATOR}" ${_cmake_args}
+            WORKING_DIRECTORY "${_cmake_dir}"
+            RESULT_VARIABLE re
+            OUTPUT_VARIABLE _stdout  # stdout的输出内容
+            ERROR_VARIABLE _stderr  # stderr的输出内容
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_STRIP_TRAILING_WHITESPACE
     )
 
     if(re)
@@ -217,13 +217,13 @@ function(_cfep_build_inline name)
         message(STATUS "CMake Build ${name}...(Please Wait)")
     endif()
     execute_process(
-                    COMMAND "${CMAKE_COMMAND}" --build .
-                    WORKING_DIRECTORY "${_cmake_dir}/build"
-                    RESULT_VARIABLE re
-                    OUTPUT_VARIABLE _stdout  # stdout的输出内容
-                    ERROR_VARIABLE _stderr  # stderr的输出内容
-                    OUTPUT_STRIP_TRAILING_WHITESPACE
-                    ERROR_STRIP_TRAILING_WHITESPACE
+            COMMAND "${CMAKE_COMMAND}" --build .
+            WORKING_DIRECTORY "${_cmake_dir}/build"
+            RESULT_VARIABLE re
+            OUTPUT_VARIABLE _stdout  # stdout的输出内容
+            ERROR_VARIABLE _stderr  # stderr的输出内容
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_STRIP_TRAILING_WHITESPACE
     )
 
     if(re)
@@ -283,12 +283,12 @@ endfunction()
 # 从git下载程序
 function(_cfep_build_git_inline name dir git git_tag url)
     _cfep_build_inline(${name}
-                 DOWNLOAD_COMMAND
-                 GIT_REPOSITORY ${git}
-                 GIT_TAG ${git_tag}
-                 GIT_PROGRESS 0
-                 GIT_REMOTE_UPDATE_STRATEGY REBASE_CHECKOUT
-                 ${ARGN})
+                       DOWNLOAD_COMMAND
+                       GIT_REPOSITORY ${git}
+                       GIT_TAG ${git_tag}
+                       GIT_PROGRESS 0
+                       GIT_REMOTE_UPDATE_STRATEGY REBASE_CHECKOUT
+                       ${ARGN})
     if (${name}_CFEP_FOUND)
         set(${name}_BUILD TRUE PARENT_SCOPE)
     else()
